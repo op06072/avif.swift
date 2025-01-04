@@ -27,6 +27,7 @@
 #define ToneMapper_hpp
 
 #include <stdio.h>
+#include <math.h>
 
 #if __arm64__
 #include <arm_neon.h>
