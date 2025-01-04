@@ -25,9 +25,11 @@
 
 import Foundation
 import Nuke
+import SDWebImage
 #if canImport(avif)
 import avif
 #endif
+
 
 public final class AVIFNukePlugin: Nuke.ImageDecoding {
 
@@ -35,12 +37,12 @@ public final class AVIFNukePlugin: Nuke.ImageDecoding {
     }
     
     public func decode(_ data: Data) throws -> ImageContainer {
-        guard data.isAVIFFormat else { throw AVIFNukePluginDecodeError() }
         guard let image = AVIFDecoder.decode(data) else { throw AVIFNukePluginDecodeError() }
         return ImageContainer(image: image)
     }
 
     public func decodePartiallyDownloadedData(_ data: Data) -> ImageContainer? {
+        guard data.isAVIFFormat else { return nil }
         return nil
     }
 

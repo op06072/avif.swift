@@ -20,12 +20,17 @@ let package = Package(
         .package(url: "https://github.com/awxkee/libyuv.swift.git", "1.1.0"..<"1.2.0"),
         .package(url: "https://github.com/op06072/libwebp-ios.git", "1.2.0"..<"1.3.0"),
         .package(url: "https://github.com/kean/Nuke.git", "12.0.0"..<"13.0.0"),
-        .package(url: "https://github.com/awxkee/libsvtav1enc.swift", "1.1.0"..<"1.2.0")
+        .package(url: "https://github.com/awxkee/libsvtav1enc.swift", "1.1.0"..<"1.2.0"),
+        .package(url: "https://github.com/SDWebImage/SDWebImage.git", "5.20.0"..<"5.21.0"),
     ],
     targets: [
         .target(
             name: "avifnuke",
-            dependencies: ["avif", .product(name: "Nuke", package: "Nuke"), "avifc"]),
+            dependencies: [
+                "avif", "avifc",
+                .product(name: "Nuke", package: "Nuke"),
+                .product(name: "SDWebImage", package: "SDWebImage")
+            ]),
         .target(
             name: "avif",
             dependencies: ["avifc"]),
