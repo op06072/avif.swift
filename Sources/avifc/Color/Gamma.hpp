@@ -27,6 +27,7 @@
 #define Gamma_hpp
 
 #include <stdio.h>
+#include <math.h>
 
 #if defined(__clang__)
 #pragma clang fp contract(on) exceptions(ignore) reassociate(on)
