@@ -51,9 +51,9 @@ void DragoToneMapper::Execute(float& r, float& g, float &b) {
           LinP  = Lin / LwaP;
 
     // Apply tonemapping curve to luminance
-    float exponent = std::log(b) / std::log(0.5f),
-          c1       = (0.01f * LdMax) / std::log10(1.f + LmaxP),
-          c2       = log(1.f + LinP) / std::log(2.f + 8.f * pow(LinP / LmaxP, exponent)),
+    float exponent = log(b) / log(0.5f),
+          c1       = (0.01f * LdMax) / log10(1.f + LmaxP),
+          c2       = log(1.f + LinP) / log(2.f + 8.f * pow(LinP / LmaxP, exponent)),
           Lout     = c1 * c2;
 
     const float scale = Lout / Lin;
