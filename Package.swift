@@ -31,7 +31,10 @@ let package = Package(
             dependencies: ["avifc"]),
         .target(name: "avifc",
                 dependencies: [.target(name: "libavif")],
-                cxxSettings: [.headerSearchPath(".")],
+                cxxSettings: [
+                    .headerSearchPath("."),
+                    .unsafeFlags(["-lm"]),
+                ],
                 linkerSettings: [
                     .linkedFramework("Accelerate")
                 ]),
