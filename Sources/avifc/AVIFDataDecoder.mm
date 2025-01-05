@@ -287,7 +287,7 @@ void sharedDecoderDeallocator(avifDecoder* d) {
             NSMutableArray<SDImageFrame *> *frames = [NSMutableArray array];
             while (avifDecoderNextImage(decoder.get()) == AVIF_RESULT_OK) {
                 @autoreleasepool {
-                    CGImageRef imageRef = SDCreateCGImageFromAVIF(decoder->image);
+                    CGImageRef imageRef = _SDCreateCGImageFromAVIF(decoder->image);
                     if (!imageRef) {
                         continue;
                     }
