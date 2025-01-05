@@ -36,6 +36,7 @@ let package = Package(
                 dependencies: [.target(name: "libavif")],
                 cxxSettings: [
                     .headerSearchPath("."),
+                    .define("DEBUG", to: "1"),
                     .unsafeFlags(["-lm"]),
                 ],
                 linkerSettings: [
@@ -50,6 +51,7 @@ let package = Package(
                     .product(name: "libSvtAv1Enc", package: "libsvtav1enc.swift")],
                 publicHeadersPath: "include",
                 cSettings: [
+                    .define("DEBUG", to: "1"),
                     .define("AVIF_CODEC_AOM_ENCODE", to: "1"),
                     .define("AVIF_CODEC_AOM", to: "1"),
                     .define("AVIF_CODEC_DAV1D", to: "1"),
@@ -60,6 +62,7 @@ let package = Package(
                     .define("AVIF_CODEC_SVT", to: "1")
                 ],
                 cxxSettings: [
+                    .define("DEBUG", to: "1"),
                     .define("AVIF_CODEC_AOM_ENCODE", to: "1"),
                     .define("AVIF_CODEC_AOM", to: "1"),
                     .define("AVIF_CODEC_DAV1D", to: "1"),
