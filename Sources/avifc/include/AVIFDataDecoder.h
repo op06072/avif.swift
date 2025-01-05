@@ -31,6 +31,7 @@
 #else
 #import "avif/avif.h"
 #endif
+#import "../SDSources/SDImageFrame.h"
 
 @interface AVIFDataDecoder : NSObject
 
