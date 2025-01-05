@@ -28,8 +28,7 @@ let package = Package(
             name: "avifnuke",
             dependencies: [
                 "avif", "avifc",
-                .product(name: "Nuke", package: "Nuke"),
-                .product(name: "SDWebImage", package: "SDWebImage")
+                .product(name: "Nuke", package: "Nuke")
             ]),
         .target(
             name: "avif",
