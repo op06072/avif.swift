@@ -26,15 +26,20 @@
 //https://www.garykessler.net/library/file_sigs.html
 import Foundation
 
-public extension Data {
+private let fileHeaderIndex: Int = 4
 
-    var isAVIFFormat: Bool {
-        do {
-            let ss = try AVIFDecoder.readSize(data: self)
-            return ss.width > 0 && ss.height > 0
-        } catch {
-            return false
-        }
+private let avifBytes: [UInt8] = [
+    0x66, 0x74, 0x79, 0x70, // ftyp
+    0x61, 0x76, 0x69  // avif or avis
+]
+private let magicBytesEndIndex: Int = fileHeaderIndex+avifBytes.count
+// MARK: - AVIF Format Testing
+extension Data {
+
+    internal var isAVIFFormat: Bool {
+        guard magicBytesEndIndex < count else { return false }
+        let bytesStart = index(startIndex, offsetBy: fileHeaderIndex)
+        let data = subdata(in: bytesStart..<magicBytesEndIndex)
+        return data.elementsEqual(avifBytes)
     }
-
 }
