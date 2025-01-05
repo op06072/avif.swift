@@ -13,5 +13,5 @@
 #endif
 #import <Accelerate/Accelerate.h>
 
-extern CGImageRef _Nullable SDCreateCGImageFromAVIF(avifImage * _Nonnull avif) __attribute__((visibility("hidden")));
+extern CGImageRef _Nullable SDCreateCGImageFromAVIF(avifImage * _Nonnull avif); // __attribute__((visibility("hidden")));
 extern CGImageRef _Nullable CreateImageFromBuffer(avifImage * _Nonnull avif, vImage_Buffer* _Nonnull result);
