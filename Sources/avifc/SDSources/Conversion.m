@@ -84,108 +84,108 @@ static avifBool avifPrepareReformatState(const avifImage * image, const avifRGBI
         return AVIF_FALSE;
     }
 
-    avifGetPixelFormatInfo(image->yuvFormat, &state->formatInfo);
-    avifCalcYUVCoefficients(image, &state->kr, &state->kg, &state->kb);
-    state->mode = AVIF_REFORMAT_MODE_YUV_COEFFICIENTS;
+    avifGetPixelFormatInfo(image->yuvFormat, &state->yuv.formatInfo);
+    avifCalcYUVCoefficients(image, &state->yuv.kr, &state->yuv.kg, &state->yuv.kb);
+    state->yuv.mode = AVIF_REFORMAT_MODE_YUV_COEFFICIENTS;
 
     if (image->matrixCoefficients == AVIF_MATRIX_COEFFICIENTS_IDENTITY) {
-        state->mode = AVIF_REFORMAT_MODE_IDENTITY;
+        state->yuv.mode = AVIF_REFORMAT_MODE_IDENTITY;
     } else if (image->matrixCoefficients == AVIF_MATRIX_COEFFICIENTS_YCGCO) {
-        state->mode = AVIF_REFORMAT_MODE_YCGCO;
+        state->yuv.mode = AVIF_REFORMAT_MODE_YCGCO;
     }
 
-    if (state->mode != AVIF_REFORMAT_MODE_YUV_COEFFICIENTS) {
-        state->kr = 0.0f;
-        state->kg = 0.0f;
-        state->kb = 0.0f;
+    if (state->yuv.mode != AVIF_REFORMAT_MODE_YUV_COEFFICIENTS) {
+        state->yuv.kr = 0.0f;
+        state->yuv.kg = 0.0f;
+        state->yuv.kb = 0.0f;
     }
 
-    state->yuvChannelBytes = (image->depth > 8) ? 2 : 1;
-    state->rgbChannelBytes = (rgb->depth > 8) ? 2 : 1;
-    state->rgbChannelCount = avifRGBFormatChannelCount(rgb->format);
-    state->rgbPixelBytes = state->rgbChannelBytes * state->rgbChannelCount;
+    state->yuv.channelBytes = (image->depth > 8) ? 2 : 1;
+    state->rgb.channelBytes = (rgb->depth > 8) ? 2 : 1;
+    state->rgb.channelCount = avifRGBFormatChannelCount(rgb->format);
+    state->rgb.pixelBytes = state->rgb.channelBytes * state->rgb.channelCount;
 
     switch (rgb->format) {
         case AVIF_RGB_FORMAT_RGB:
-            state->rgbOffsetBytesR = state->rgbChannelBytes * 0;
-            state->rgbOffsetBytesG = state->rgbChannelBytes * 1;
-            state->rgbOffsetBytesB = state->rgbChannelBytes * 2;
-            state->rgbOffsetBytesA = 0;
+            state->rgb.offsetBytesR = state->rgb.channelBytes * 0;
+            state->rgb.offsetBytesG = state->rgb.channelBytes * 1;
+            state->rgb.offsetBytesB = state->rgb.channelBytes * 2;
+            state->rgb.offsetBytesA = 0;
             break;
         case AVIF_RGB_FORMAT_RGBA:
-            state->rgbOffsetBytesR = state->rgbChannelBytes * 0;
-            state->rgbOffsetBytesG = state->rgbChannelBytes * 1;
-            state->rgbOffsetBytesB = state->rgbChannelBytes * 2;
-            state->rgbOffsetBytesA = state->rgbChannelBytes * 3;
+            state->rgb.offsetBytesR = state->rgb.channelBytes * 0;
+            state->rgb.offsetBytesG = state->rgb.channelBytes * 1;
+            state->rgb.offsetBytesB = state->rgb.channelBytes * 2;
+            state->rgb.offsetBytesA = state->rgb.channelBytes * 3;
             break;
         case AVIF_RGB_FORMAT_ARGB:
-            state->rgbOffsetBytesA = state->rgbChannelBytes * 0;
-            state->rgbOffsetBytesR = state->rgbChannelBytes * 1;
-            state->rgbOffsetBytesG = state->rgbChannelBytes * 2;
-            state->rgbOffsetBytesB = state->rgbChannelBytes * 3;
+            state->rgb.offsetBytesA = state->rgb.channelBytes * 0;
+            state->rgb.offsetBytesR = state->rgb.channelBytes * 1;
+            state->rgb.offsetBytesG = state->rgb.channelBytes * 2;
+            state->rgb.offsetBytesB = state->rgb.channelBytes * 3;
             break;
         case AVIF_RGB_FORMAT_BGR:
-            state->rgbOffsetBytesB = state->rgbChannelBytes * 0;
-            state->rgbOffsetBytesG = state->rgbChannelBytes * 1;
-            state->rgbOffsetBytesR = state->rgbChannelBytes * 2;
-            state->rgbOffsetBytesA = 0;
+            state->rgb.offsetBytesB = state->rgb.channelBytes * 0;
+            state->rgb.offsetBytesG = state->rgb.channelBytes * 1;
+            state->rgb.offsetBytesR = state->rgb.channelBytes * 2;
+            state->rgb.offsetBytesA = 0;
             break;
         case AVIF_RGB_FORMAT_BGRA:
-            state->rgbOffsetBytesB = state->rgbChannelBytes * 0;
-            state->rgbOffsetBytesG = state->rgbChannelBytes * 1;
-            state->rgbOffsetBytesR = state->rgbChannelBytes * 2;
-            state->rgbOffsetBytesA = state->rgbChannelBytes * 3;
+            state->rgb.offsetBytesB = state->rgb.channelBytes * 0;
+            state->rgb.offsetBytesG = state->rgb.channelBytes * 1;
+            state->rgb.offsetBytesR = state->rgb.channelBytes * 2;
+            state->rgb.offsetBytesA = state->rgb.channelBytes * 3;
             break;
         case AVIF_RGB_FORMAT_ABGR:
-            state->rgbOffsetBytesA = state->rgbChannelBytes * 0;
-            state->rgbOffsetBytesB = state->rgbChannelBytes * 1;
-            state->rgbOffsetBytesG = state->rgbChannelBytes * 2;
-            state->rgbOffsetBytesR = state->rgbChannelBytes * 3;
+            state->rgb.offsetBytesA = state->rgb.channelBytes * 0;
+            state->rgb.offsetBytesB = state->rgb.channelBytes * 1;
+            state->rgb.offsetBytesG = state->rgb.channelBytes * 2;
+            state->rgb.offsetBytesR = state->rgb.channelBytes * 3;
             break;
 
         default:
             return AVIF_FALSE;
     }
 
-    state->yuvDepth = image->depth;
-    state->yuvRange = image->yuvRange;
-    state->yuvMaxChannel = (1 << image->depth) - 1;
-    state->rgbMaxChannel = (1 << rgb->depth) - 1;
-    state->rgbMaxChannelF = (float)state->rgbMaxChannel;
-    state->biasY = (state->yuvRange == AVIF_RANGE_LIMITED) ? (float)(16 << (state->yuvDepth - 8)) : 0.0f;
-    state->biasUV = (float)(1 << (state->yuvDepth - 1));
-    state->biasA = (image->alphaRange == AVIF_RANGE_LIMITED) ? (float)(16 << (state->yuvDepth - 8)) : 0.0f;
-    state->rangeY = (float)((state->yuvRange == AVIF_RANGE_LIMITED) ? (219 << (state->yuvDepth - 8)) : state->yuvMaxChannel);
-    state->rangeUV = (float)((state->yuvRange == AVIF_RANGE_LIMITED) ? (224 << (state->yuvDepth - 8)) : state->yuvMaxChannel);
-    state->rangeA = (float)((image->alphaRange == AVIF_RANGE_LIMITED) ? (219 << (state->yuvDepth - 8)) : state->yuvMaxChannel);
+    state->yuv.depth = image->depth;
+    state->yuv.range = image->yuvRange;
+    state->yuv.maxChannel = (1 << image->depth) - 1;
+    state->rgb.maxChannel = (1 << rgb->depth) - 1;
+    state->rgb.maxChannelF = (float)state->rgb.maxChannel;
+    state->yuv.biasY = (state->yuv.range == AVIF_RANGE_LIMITED) ? (float)(16 << (state->yuv.depth - 8)) : 0.0f;
+    state->yuv.biasUV = (float)(1 << (state->yuv.depth - 1));
+    state->yuv.biasA = (image->alphaRange == AVIF_RANGE_LIMITED) ? (float)(16 << (state->yuv.depth - 8)) : 0.0f;
+    state->yuv.rangeY = (float)((state->yuv.range == AVIF_RANGE_LIMITED) ? (219 << (state->yuv.depth - 8)) : state->yuv.maxChannel);
+    state->yuv.rangeUV = (float)((state->yuv.range == AVIF_RANGE_LIMITED) ? (224 << (state->yuv.depth - 8)) : state->yuv.maxChannel);
+    state->yuv.rangeA = (float)((image->alphaRange == AVIF_RANGE_LIMITED) ? (219 << (state->yuv.depth - 8)) : state->yuv.maxChannel);
 
     uint32_t cpCount = 1 << image->depth;
-    if (state->mode == AVIF_REFORMAT_MODE_IDENTITY) {
+    if (state->yuv.mode == AVIF_REFORMAT_MODE_IDENTITY) {
         for (uint32_t cp = 0; cp < cpCount; ++cp) {
-            state->unormFloatTableY[cp] = ((float)cp - state->biasY) / state->rangeY;
-            state->unormFloatTableUV[cp] = ((float)cp - state->biasY) / state->rangeY;
+            state->yuv.unormFloatTableY[cp] = ((float)cp - state->yuv.biasY) / state->yuv.rangeY;
+            state->yuv.unormFloatTableUV[cp] = ((float)cp - state->yuv.biasY) / state->yuv.rangeY;
         }
     } else {
         for (uint32_t cp = 0; cp < cpCount; ++cp) {
             // Review this when implementing YCgCo limited range support.
-            state->unormFloatTableY[cp] = ((float)cp - state->biasY) / state->rangeY;
-            state->unormFloatTableUV[cp] = ((float)cp - state->biasUV) / state->rangeUV;
+            state->yuv.unormFloatTableY[cp] = ((float)cp - state->yuv.biasY) / state->yuv.rangeY;
+            state->yuv.unormFloatTableUV[cp] = ((float)cp - state->yuv.biasUV) / state->yuv.rangeUV;
         }
     }
 
-    state->toRGBAlphaMode = AVIF_ALPHA_MULTIPLY_MODE_NO_OP;
+    state->yuv.toRGBAlphaMode = AVIF_ALPHA_MULTIPLY_MODE_NO_OP;
     if (image->alphaPlane) {
         if (!avifRGBFormatHasAlpha(rgb->format) || rgb->ignoreAlpha) {
             // if we are converting some image with alpha into a format without alpha, we should do 'premultiply alpha' before
             // discarding alpha plane. This has the same effect of rendering this image on a black background, which makes sense.
             if (!image->alphaPremultiplied) {
-                state->toRGBAlphaMode = AVIF_ALPHA_MULTIPLY_MODE_MULTIPLY;
+                state->yuv.toRGBAlphaMode = AVIF_ALPHA_MULTIPLY_MODE_MULTIPLY;
             }
         } else {
             if (!image->alphaPremultiplied && rgb->alphaPremultiplied) {
-                state->toRGBAlphaMode = AVIF_ALPHA_MULTIPLY_MODE_MULTIPLY;
+                state->yuv.toRGBAlphaMode = AVIF_ALPHA_MULTIPLY_MODE_MULTIPLY;
             } else if (image->alphaPremultiplied && !rgb->alphaPremultiplied) {
-                state->toRGBAlphaMode = AVIF_ALPHA_MULTIPLY_MODE_UNMULTIPLY;
+                state->yuv.toRGBAlphaMode = AVIF_ALPHA_MULTIPLY_MODE_UNMULTIPLY;
             }
         }
     }
@@ -212,11 +212,11 @@ static void SetupConversionInfo(avifImage * avif,
     // Setup Matrix
     matrix->Yp = 1.0f;
 
-    matrix->Cb_B =  2.0f * (1.0f - state->kb);
-    matrix->Cb_G = -2.0f * (1.0f - state->kb) * state->kb / state->kg;
+    matrix->Cb_B =  2.0f * (1.0f - state->yuv.kb);
+    matrix->Cb_G = -2.0f * (1.0f - state->yuv.kb) * state->yuv.kb / state->yuv.kg;
 
-    matrix->Cr_R =  2.0f * (1.0f - state->kr);
-    matrix->Cr_G = -2.0f * (1.0f - state->kr) * state->kr / state->kg;
+    matrix->Cr_R =  2.0f * (1.0f - state->yuv.kr);
+    matrix->Cr_G = -2.0f * (1.0f - state->yuv.kr) * state->yuv.kr / state->yuv.kg;
 
     // Setup Pixel Range
     switch (avif->depth) {
@@ -352,8 +352,8 @@ static CGImageRef CreateCGImage8(avifImage * avif) {
     vImage_Buffer origCb = {
         .data = avif->yuvPlanes[AVIF_CHAN_U],
         .rowBytes = avif->yuvRowBytes[AVIF_CHAN_U],
-        .width = (avif->width+state.formatInfo.chromaShiftX) >> state.formatInfo.chromaShiftX,
-        .height = (avif->height+state.formatInfo.chromaShiftY) >> state.formatInfo.chromaShiftY,
+        .width = (avif->width+state.yuv.formatInfo.chromaShiftX) >> state.yuv.formatInfo.chromaShiftX,
+        .height = (avif->height+state.yuv.formatInfo.chromaShiftY) >> state.yuv.formatInfo.chromaShiftY,
     };
 
     if(origCb.data == NULL) { // allocate dummy data to convert monochrome images.
@@ -369,8 +369,8 @@ static CGImageRef CreateCGImage8(avifImage * avif) {
     vImage_Buffer origCr = {
         .data = avif->yuvPlanes[AVIF_CHAN_V],
         .rowBytes = avif->yuvRowBytes[AVIF_CHAN_V],
-        .width = (avif->width+state.formatInfo.chromaShiftX) >> state.formatInfo.chromaShiftX,
-        .height = (avif->height+state.formatInfo.chromaShiftY) >> state.formatInfo.chromaShiftY,
+        .width = (avif->width+state.yuv.formatInfo.chromaShiftX) >> state.yuv.formatInfo.chromaShiftX,
+        .height = (avif->height+state.yuv.formatInfo.chromaShiftY) >> state.yuv.formatInfo.chromaShiftY,
     };
     if(origCr.data == NULL) { // allocate dummy data to convert monochrome images.
         dummyCrData = calloc(origCr.width, sizeof(uint8_t));
@@ -783,8 +783,8 @@ static CGImageRef CreateCGImage16U(avifImage * avif) {
     vImage_Buffer origCb = {
         .data = avif->yuvPlanes[AVIF_CHAN_U],
         .rowBytes = avif->yuvRowBytes[AVIF_CHAN_U],
-        .width = (avif->width+state.formatInfo.chromaShiftX) >> state.formatInfo.chromaShiftX,
-        .height = (avif->height+state.formatInfo.chromaShiftY) >> state.formatInfo.chromaShiftY,
+        .width = (avif->width+state.yuv.formatInfo.chromaShiftX) >> state.yuv.formatInfo.chromaShiftX,
+        .height = (avif->height+state.yuv.formatInfo.chromaShiftY) >> state.yuv.formatInfo.chromaShiftY,
     };
 
     if(!origCb.data) { // allocate dummy data to convert monochrome images.
@@ -809,8 +809,8 @@ static CGImageRef CreateCGImage16U(avifImage * avif) {
     vImage_Buffer origCr = {
         .data = avif->yuvPlanes[AVIF_CHAN_V],
         .rowBytes = avif->yuvRowBytes[AVIF_CHAN_V],
-        .width = (avif->width+state.formatInfo.chromaShiftX) >> state.formatInfo.chromaShiftX,
-        .height = (avif->height+state.formatInfo.chromaShiftY) >> state.formatInfo.chromaShiftY,
+        .width = (avif->width+state.yuv.formatInfo.chromaShiftX) >> state.yuv.formatInfo.chromaShiftX,
+        .height = (avif->height+state.yuv.formatInfo.chromaShiftY) >> state.yuv.formatInfo.chromaShiftY,
     };
 
     if(!origCr.data) { // allocate dummy data to convert monochrome images.

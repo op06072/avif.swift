@@ -200,6 +200,7 @@ typedef enum avifAlphaMultiplyMode
 typedef struct avifRGBColorSpaceInfo
 {
     uint32_t channelBytes; // Number of bytes per channel.
+    uint32_t channelCount; // Number of channel.
     uint32_t pixelBytes;   // Number of bytes per pixel (= channelBytes * num channels).
     uint32_t offsetBytesR; // Offset in bytes of the red channel in a pixel.
     uint32_t offsetBytesG; // Offset in bytes of the green channel in a pixel.
@@ -226,11 +227,19 @@ typedef struct avifYUVColorSpaceInfo
     int maxChannel;        // Maximum value for a channel (e.g. 255 for 8 bit).
     float biasY;           // Minimum Y value.
     float biasUV;          // The value of 0.5 for the appropriate bit depth (128 for 8 bit, 512 for 10 bit, 2048 for 12 bit).
+    float biasA;           // minimum A value
     float rangeY;          // Difference between max and min Y.
     float rangeUV;         // Difference between max and min UV.
+    float rangeA;          // difference between max and min A
+    
+    // LUTs for going from YUV limited/full unorm -> full range RGB FP32
+    float unormFloatTableY[1 << 12];
+    float unormFloatTableUV[1 << 12];
 
     avifPixelFormatInfo formatInfo; // Chroma subsampling information.
     avifReformatMode mode;          // Appropriate RGB<->YUV conversion mode.
+    // Used by avifImageYUVToRGB() only. avifImageRGBToYUV() uses a local variable (alphaMode) instead.
+    avifAlphaMultiplyMode toRGBAlphaMode;
 } avifYUVColorSpaceInfo;
 
 avifBool avifGetYUVColorSpaceInfo(const avifImage * image, avifYUVColorSpaceInfo * info);
