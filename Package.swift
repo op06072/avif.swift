@@ -21,7 +21,6 @@ let package = Package(
         .package(url: "https://github.com/op06072/libwebp-ios.git", "1.2.0"..<"1.3.0"),
         .package(url: "https://github.com/kean/Nuke.git", "12.0.0"..<"13.0.0"),
         .package(url: "https://github.com/awxkee/libsvtav1enc.swift", "1.1.0"..<"1.2.0"),
-        .package(url: "https://github.com/SDWebImage/SDWebImage.git", "5.20.0"..<"5.21.0"),
     ],
     targets: [
         .target(

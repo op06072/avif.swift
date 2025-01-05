@@ -25,7 +25,6 @@
 
 import Foundation
 import Nuke
-import SDWebImage
 #if canImport(avif)
 import avif
 #endif
