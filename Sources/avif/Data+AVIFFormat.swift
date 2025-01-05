@@ -34,9 +34,9 @@ private let avifBytes: [UInt8] = [
 ]
 private let magicBytesEndIndex: Int = fileHeaderIndex+avifBytes.count
 // MARK: - AVIF Format Testing
-extension Data {
+public extension Data {
 
-    internal var isAVIFFormat: Bool {
+    var isAVIFFormat: Bool {
         guard magicBytesEndIndex < count else { return false }
         let bytesStart = index(startIndex, offsetBy: fileHeaderIndex)
         let data = subdata(in: bytesStart..<magicBytesEndIndex)

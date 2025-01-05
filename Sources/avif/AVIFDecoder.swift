@@ -48,8 +48,9 @@ public final class AVIFDecoder {
 
     public func isAVIF(data: Data) -> Bool {
         do {
-            let ss = try AVIFDecoder.readSize(data: data)
-            return ss.width > 0 && ss.height > 0
+            return data.isAVIFFormat
+            // let ss = try AVIFDecoder.readSize(data: data)
+            // return ss.width > 0 && ss.height > 0
         } catch {
             return false
         }

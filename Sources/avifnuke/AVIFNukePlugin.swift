@@ -28,21 +28,28 @@ import Nuke
 #if canImport(avif)
 import avif
 #endif
+#if SWIFT_PACKAGE
+@preconcurrency import avifc
+#endif
 
 
 public final class AVIFNukePlugin: Nuke.ImageDecoding {
+    
+    private lazy var decoder: AVIFDataDecoder = AVIFDataDecoder()
 
     public init() {
     }
     
     public func decode(_ data: Data) throws -> ImageContainer {
+        guard data.isAVIFFormat else { throw ImageDecodingError.unknown }
         guard let image = AVIFDecoder.decode(data) else { throw AVIFNukePluginDecodeError() }
         return ImageContainer(image: image, type: .avif, data: data)
     }
 
     public func decodePartiallyDownloadedData(_ data: Data) -> ImageContainer? {
         guard data.isAVIFFormat else { return nil }
-        return nil
+        guard let image = decoder.incrementallyDecode(data) else { return nil }
+        return ImageContainer(image: image, type: .avif, data: data)
     }
 
     public struct AVIFNukePluginDecodeError: LocalizedError, CustomNSError {
