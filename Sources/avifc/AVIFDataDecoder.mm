@@ -22,6 +22,7 @@
 #import "SDSources/Conversion.h"
 #import "SDSources/SDImageCoderHelper.h"
 #import "SDSources/UIImage+Metadata.h"
+#import "SDSources/Conversion.h"
 
 #if !TARGET_OS_IPHONE && !TARGET_OS_IOS && !TARGET_OS_TV && !TARGET_OS_WATCH
     #define AVIF_PLUGIN_MAC 1
