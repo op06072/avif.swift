@@ -44,7 +44,7 @@ public final class AVIFNukePlugin: Nuke.ImageDecoding {
         guard data.isAVIFFormat else { throw ImageDecodingError.unknown }
         // guard let image = AVIFDecoder.decode(data) else { throw AVIFNukePluginDecodeError() }
         guard let image = try? decoder.decode(InputStream(data: data), sampleSize: .zero, maxContentSize: 0, scale: 1) else { throw AVIFNukePluginDecodeError() }
-        return ImageContainer(image: image, type: .avif, data: data)
+        return ImageContainer(image: image, type: .avif)
     }
 
     public func decodePartiallyDownloadedData(_ data: Data) -> ImageContainer? {

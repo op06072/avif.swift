@@ -19,7 +19,6 @@
 #import "HDRColorTransfer.h"
 #import <thread>
 #import <TargetConditionals.h>
-#import <iostream>
 
 #if !TARGET_OS_IPHONE && !TARGET_OS_IOS && !TARGET_OS_TV && !TARGET_OS_WATCH
     #define AVIF_PLUGIN_MAC 1
@@ -242,7 +241,6 @@ void sharedDecoderDeallocator(avifDecoder* d) {
             return nil;
         }
         
-        cout << "decode start" << endl;
         // Static image
         if (decoder->imageCount <= 1) {
             avifResult nextImageResult = avifDecoderNextImage(decoder.get());
