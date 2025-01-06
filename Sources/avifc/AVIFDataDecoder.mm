@@ -71,6 +71,8 @@ void sharedDecoderDeallocator(avifDecoder* d) {
 
     if (!_idec) {
         _idec = avifDecoderCreate();
+        _idec->allowIncremental = true;
+        _idec->allowProgressive = true;
         // Disable strict mode to keep some AVIF image compatible
         _idec->strictFlags = AVIF_STRICT_DISABLED;
         if (!_idec) {
@@ -78,7 +80,9 @@ void sharedDecoderDeallocator(avifDecoder* d) {
         }
 
     }
-
+    
+    int hwThreads = std::thread::hardware_concurrency();
+    _idec->maxThreads = hwThreads;
     avifDecoderSetIOMemory(_idec, reinterpret_cast<const uint8_t *>(data.bytes), data.length);
     avifResult decodeResult = avifDecoderParse(_idec);
 
