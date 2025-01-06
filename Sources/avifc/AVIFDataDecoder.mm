@@ -92,9 +92,11 @@ void sharedDecoderDeallocator(avifDecoder* d) {
     if (!_idec->allowProgressive) {
         NSLog(@"Progressive decoding is not allowed");
     }
+    
+    auto xForm = [[AVIFImageXForm alloc] init];
 
     // Static image
-    if (_idec->imageCount >= 1) {
+    if (_idec->imageCount == 1) {
         avifResult nextImageResult = avifDecoderNextImage(_idec);
 
         if (nextImageResult != AVIF_RESULT_OK) {
@@ -104,18 +106,46 @@ void sharedDecoderDeallocator(avifDecoder* d) {
             return nil;
         }
 
-        auto xForm = [[AVIFImageXForm alloc] init];
         auto image = [xForm form:_idec scale:1];
 
         if (!image) {
+            avifDecoderDestroy(_idec);
+            _idec = NULL;
             return nil;
         }
 
         return image;
-    } else if (_idec->imageCount < 1) {
+    } else if (_idec->imageCount > 1) {
+        NSMutableArray<SDImageFrame *> *frames = [NSMutableArray array];
+        while (avifDecoderNextImage(_idec) == AVIF_RESULT_OK) {
+            @autoreleasepool {
+                auto image = [xForm form:_idec scale:1];
+                
+                if (!image) {
+                    avifDecoderDestroy(_idec);
+                    _idec = NULL;
+                    return nil;
+                }
+                
+                NSTimeInterval duration = _idec->imageTiming.duration;
+                SDImageFrame *frame = [SDImageFrame frameWithImage:image duration:duration];
+                [frames addObject:frame];
+            }
+        }
+        
+        UIImage *animatedImage = [SDImageCoderHelper animatedImageWithFrames:frames];
+        animatedImage.sd_imageLoopCount = 0;
+        animatedImage.sd_imageFormat = SDImageFormatAVIF;
+        
+        return animatedImage;
+    } else {
         NSLog(@"AVIF Data decoder: image is not already allocated... continue decoding...");
+        avifDecoderDestroy(_idec);
+        _idec = NULL;
         return nil;
     }
+    avifDecoderDestroy(_idec);
+    _idec = NULL;
     return nil;
 }
 
@@ -241,8 +271,28 @@ void sharedDecoderDeallocator(avifDecoder* d) {
             return nil;
         }
         
+        if (!CGSizeEqualToSize(CGSizeZero, sampleSize)) {
+
+            float imageAspectRatio = (float)decoder->image->width / (float)decoder->image->height;
+            float canvasRatio = sampleSize.width / sampleSize.height;
+
+            float resizeFactor = 1.0f;
+
+            if (imageAspectRatio > canvasRatio) {
+                resizeFactor = sampleSize.width / (float)decoder->image->width;
+            } else {
+                resizeFactor = sampleSize.height / (float)decoder->image->width;
+            }
+
+            if (!avifImageScale(decoder->image, (float)decoder->image->width*resizeFactor,
+                                (float)decoder->image->height*resizeFactor, &decoder->diag)) {
+                return nil;
+            }
+        }
+        auto xForm = [[AVIFImageXForm alloc] init];
+        
         // Static image
-        if (decoder->imageCount <= 1) {
+        if (decoder->imageCount == 1) {
             avifResult nextImageResult = avifDecoderNextImage(decoder.get());
             if (nextImageResult != AVIF_RESULT_OK) {
                 NSLog(@"Failed to decode image: %s", avifResultToString(nextImageResult));
@@ -251,27 +301,6 @@ void sharedDecoderDeallocator(avifDecoder* d) {
                                                 userInfo:@{ NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Decoding AVIF failed with: %s", avifResultToString(nextImageResult)] }];
                 return nil;
             }
-
-            if (!CGSizeEqualToSize(CGSizeZero, sampleSize)) {
-
-                float imageAspectRatio = (float)decoder->image->width / (float)decoder->image->height;
-                float canvasRatio = sampleSize.width / sampleSize.height;
-
-                float resizeFactor = 1.0f;
-
-                if (imageAspectRatio > canvasRatio) {
-                    resizeFactor = sampleSize.width / (float)decoder->image->width;
-                } else {
-                    resizeFactor = sampleSize.height / (float)decoder->image->width;
-                }
-
-                if (!avifImageScale(decoder->image, (float)decoder->image->width*resizeFactor,
-                                    (float)decoder->image->height*resizeFactor, &decoder->diag)) {
-                    return nil;
-                }
-            }
-
-            auto xForm = [[AVIFImageXForm alloc] init];
             auto image = [xForm form:decoder.get() scale:scale];
 
             if (!image) {
@@ -280,11 +309,15 @@ void sharedDecoderDeallocator(avifDecoder* d) {
             }
 
             return image;
+        } else if (decoder->imageCount < 1){
+            NSLog(@"ImageCount < 1");
+            return nil;
         } else {
             NSMutableArray<SDImageFrame *> *frames = [NSMutableArray array];
             while (avifDecoderNextImage(decoder.get()) == AVIF_RESULT_OK) {
                 @autoreleasepool {
-                    CGImageRef imageRef = SDCreateCGImageFromAVIF(decoder->image);
+                    auto image = [xForm form:decoder.get() scale:scale];
+                    /*CGImageRef imageRef = SDCreateCGImageFromAVIF(decoder->image);
                     if (!imageRef) {
                         continue;
                     }
@@ -293,7 +326,13 @@ void sharedDecoderDeallocator(avifDecoder* d) {
                     image = [[NSImage alloc] initWithCGImage:imageRef size:CGSizeZero];
         #else
                     image = [UIImage imageWithCGImage:imageRef scale:scale orientation:UIImageOrientationUp];
-        #endif
+        #endif*/
+                    
+                    if (!image) {
+                        *error = [[NSError alloc] initWithDomain:@"AVIF" code:500 userInfo:@{ NSLocalizedDescriptionKey: @"Decoding AVIF has failed" }];
+                        return nil;
+                    }
+                    
                     NSTimeInterval duration = decoder->imageTiming.duration; // Should use `decoder->imageTiming`, not the `decoder->duration`, see libavif source code
                     SDImageFrame *frame = [SDImageFrame frameWithImage:image duration:duration];
                     [frames addObject:frame];
