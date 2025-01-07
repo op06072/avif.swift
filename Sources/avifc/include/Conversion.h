@@ -1,5 +1,13 @@
 //
 //  Conversion.h
+//  avif
+//
+//  Created by Eom SeHwan on 1/8/25.
+//
+
+
+//
+//  Conversion.h
 //  SDWebImageAVIFCoder
 //
 //  Created by Ryo Hirafuji on 2020/03/15.
@@ -13,11 +21,5 @@
 #endif
 #import <Accelerate/Accelerate.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 extern CGImageRef _Nullable SDCreateCGImageFromAVIF(avifImage * _Nonnull avif) __attribute__((visibility("hidden")));
-#ifdef __cplusplus
-}
-#endif
 extern CGImageRef _Nullable CreateImageFromBuffer(avifImage * _Nonnull avif, vImage_Buffer* _Nonnull result);

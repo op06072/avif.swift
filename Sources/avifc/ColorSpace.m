@@ -1,4 +1,12 @@
 //
+//  Colorspace.m
+//  avif
+//
+//  Created by Eom SeHwan on 1/8/25.
+//
+
+
+//
 //  ColorSpace.m
 //  SDWebImageAVIFCoder
 //

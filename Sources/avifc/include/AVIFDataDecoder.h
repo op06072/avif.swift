@@ -31,10 +31,18 @@
 #else
 #import "avif/avif.h"
 #endif
+#if __has_include(<SDWebImage/SDWebImage.h>)
+#import <SDWebImage/SDImageFrame.h>
+#import <SDWebImage/SDImageCoderHelper.h>
+#import <SDWebImage/UIImage+Metadata.h>
+#else
 #import "../SDSources/Conversion.h"
 #import "../SDSources/SDImageCoderHelper.h"
 #import "../SDSources/UIImage+Metadata.h"
 #import "../SDSources/SDImageFrame.h"
+#endif
+#import "NSData+ImageContentType.h"
+#import "Conversion.h"
 
 @interface AVIFDataDecoder : NSObject
 

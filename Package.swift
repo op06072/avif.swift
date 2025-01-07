@@ -21,6 +21,7 @@ let package = Package(
         .package(url: "https://github.com/op06072/libwebp-ios.git", "1.2.0"..<"1.3.0"),
         .package(url: "https://github.com/kean/Nuke.git", "12.0.0"..<"13.0.0"),
         .package(url: "https://github.com/awxkee/libsvtav1enc.swift", "1.1.0"..<"1.2.0"),
+        .package(url: "https://github.com/SDWebImage/SDWebImage.git", branch: "master"),
     ],
     targets: [
         .target(
@@ -33,7 +34,11 @@ let package = Package(
             name: "avif",
             dependencies: ["avifc"]),
         .target(name: "avifc",
-                dependencies: [.target(name: "libavif")],
+                dependencies: [
+                    .target(name: "libavif"),
+                    .product(name: "SDWebImage", package: "SDWebImage"),
+                ],
+                publicHeadersPath: "include",
                 cxxSettings: [
                     .headerSearchPath("."),
                     .define("DEBUG", to: "1"),

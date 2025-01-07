@@ -321,6 +321,7 @@ void sharedDecoderDeallocator(avifDecoder* d) {
             while (avifDecoderNextImage(decoder.get()) == AVIF_RESULT_OK) {
                 @autoreleasepool {
                     auto image = [xForm form:decoder.get() scale:scale];
+                    CGImageRef cgimage = SDCreateCGImageFromAVIF(decoder->image);
                     /*CGImageRef imageRef = SDCreateCGImageFromAVIF(decoder->image);
                     if (!imageRef) {
                         continue;
