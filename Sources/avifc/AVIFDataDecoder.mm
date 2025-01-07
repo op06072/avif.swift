@@ -19,6 +19,7 @@
 #import "HDRColorTransfer.h"
 #import <thread>
 #import <TargetConditionals.h>
+#import "Conversion.h"
 
 #if !TARGET_OS_IPHONE && !TARGET_OS_IOS && !TARGET_OS_TV && !TARGET_OS_WATCH
     #define AVIF_PLUGIN_MAC 1
