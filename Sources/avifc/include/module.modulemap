@@ -4,5 +4,6 @@ module avifc {
     header "AVIFEncoding.h"
     header "PlatformImage.h"
     header "AVIFAnimatedDecoder.h"
+    header "Conversion.h"
     export *
 }
