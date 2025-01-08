@@ -47,10 +47,11 @@ public final class AVIFNukePlugin: Nuke.ImageDecoding {
         // guard let image = AVIFDecoder.decode(data) else { throw AVIFNukePluginDecodeError() }
         guard let image = try? decoder.decode(InputStream(data: data), sampleSize: .zero, maxContentSize: 0, scale: 1) else { throw AVIFNukePluginDecodeError() }
         if isNukeViewerEnabled {
-            guard let image = try? decoder.decode(InputStream(data: data), sampleSize: .zero, maxContentSize: 0, scale: 1) else { throw AVIFNukePluginDecodeError() }
             return ImageContainer(image: image, type: .avif)
         } else {
-            return ImageContainer(image: UIImage(), type: .avif, data: data)
+            let img = UIImage()
+            img.setValue(image.size, forKey: "size")
+            return ImageContainer(image: img, type: .avif, data: data)
         }
     }
 
