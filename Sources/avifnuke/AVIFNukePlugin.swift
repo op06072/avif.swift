@@ -37,16 +37,41 @@ public final class AVIFNukePlugin: Nuke.ImageDecoding {
     
     private let isNukeViewerEnabled: Bool
     private lazy var decoder: AVIFDataDecoder = AVIFDataDecoder()
+    
+    lazy var width: CGFloat = 0
+    lazy var height: CGFloat = 0
 
-    public init(_ isNukeViewerEnabled: Bool = false) {
+    public init(isNuke isNukeViewerEnabled: Bool = false, width: CGFloat = 0, height: CGFloat = 0) {
         self.isNukeViewerEnabled = isNukeViewerEnabled
+        if width != 0 {
+            self.width = width
+        }
+        if height != 0 {
+            self.height = height
+        }
     }
     
     public func decode(_ data: Data) throws -> ImageContainer {
         guard data.isAVIFFormat else { throw ImageDecodingError.unknown }
         // guard let image = AVIFDecoder.decode(data) else { throw AVIFNukePluginDecodeError() }
         if isNukeViewerEnabled {
-            guard let image = try? decoder.decode(InputStream(data: data), sampleSize: .zero, maxContentSize: 0, scale: 1) else { throw AVIFNukePluginDecodeError() }
+            var size: CGSize = try! decoder.readSize(data) as! CGSize
+            if self.width != 0 {
+                size.width = self.width
+                if self.height != 0 {
+                    size.height = self.height
+                } else {
+                    let height = self.width * size.height / size.width
+                    size.height = height
+                }
+            } else if self.height != 0 {
+                size.height = self.height
+                if self.width == 0 {
+                    let width = self.height * size.width / size.height
+                    size.width = width
+                }
+            }
+            guard let image = try? decoder.decode(InputStream(data: data), sampleSize: size, maxContentSize: 0, scale: 1) else { throw AVIFNukePluginDecodeError() }
             return ImageContainer(image: image, type: .avif)
         } else {
             guard let size = try? decoder.readSize(data) else { throw AVIFNukePluginDecodeError() }
