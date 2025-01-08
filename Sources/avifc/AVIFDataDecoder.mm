@@ -290,9 +290,8 @@ void sharedDecoderDeallocator(avifDecoder* d) {
                 resizeFactor = sampleSize.height / (float)decoder->image->width;
             }
             
-            avifResult scaled = avifImageScale(decoder->image, (float)decoder->image->width*resizeFactor,
-                                        (float)decoder->image->height*resizeFactor, &decoder->diag);
-            if (!scaled) {
+            if (avifImageScale(decoder->image, (float)decoder->image->width*resizeFactor,
+                               (float)decoder->image->height*resizeFactor, &decoder->diag)) {
                 return nil;
             }
         }
