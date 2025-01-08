@@ -38,8 +38,8 @@ public final class AVIFNukePlugin: Nuke.ImageDecoding {
     private let isNukeViewerEnabled: Bool
     private lazy var decoder: AVIFDataDecoder = AVIFDataDecoder()
     
-    lazy var width: CGFloat = 0
-    lazy var height: CGFloat = 0
+    public lazy var width: CGFloat = 0
+    public lazy var height: CGFloat = 0
 
     public init(isNuke isNukeViewerEnabled: Bool = false, width: CGFloat = 0, height: CGFloat = 0) {
         self.isNukeViewerEnabled = isNukeViewerEnabled
