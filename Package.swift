@@ -13,9 +13,6 @@ let package = Package(
         .library(
             name: "avifnuke",
             targets: ["avifnuke"]),
-        .library(
-            name: "avifc",
-            targets: ["avifc"]),
     ],
     dependencies: [
         .package(url: "https://github.com/awxkee/libaom.swift.git", "1.1.0"..<"1.2.0"),
