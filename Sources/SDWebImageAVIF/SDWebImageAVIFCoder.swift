@@ -93,6 +93,10 @@ public class SDWebImageAVIFCoder: NSObject, SDAnimatedImageCoder {
 
     public var animatedImageLoopCount: UInt {
         guard let decoder else { return 0 }
+        let loopsCount = decoder.loopsCount
+        if loopsCount < 0 {
+            return UInt(0)
+        }
         return UInt(decoder.loopsCount)
     }
 
