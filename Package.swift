@@ -13,6 +13,9 @@ let package = Package(
         .library(
             name: "avifnuke",
             targets: ["avifnuke"]),
+        .library(
+            name: "SDWebImageAVIF"
+            , targets: ["SDWebImageAVIF"]),
     ],
     dependencies: [
         .package(url: "https://github.com/awxkee/libaom.swift.git", "1.1.0"..<"1.2.0"),
@@ -74,7 +77,12 @@ let package = Package(
                     .define("AVIF_LIBYUV_ENABLED", to: "1"),
                     .define("AVIF_LIBSHARPYUV_ENABLED", to: "1"),
                     .define("AVIF_CODEC_SVT", to: "1")
-                ])
+                ]),
+        .target(name: "SDWebImageAVIF",
+                dependencies: [
+                    "SDWebImage",
+                    "avifc",
+                ]),
     ],
     cxxLanguageStandard: .cxx20
 )
