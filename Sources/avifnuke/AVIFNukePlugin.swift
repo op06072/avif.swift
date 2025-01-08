@@ -49,12 +49,7 @@ public final class AVIFNukePlugin: Nuke.ImageDecoding {
         if isNukeViewerEnabled {
             return ImageContainer(image: image, type: .avif)
         } else {
-            let img = UIImage()
-            UIGraphicsBeginImageContextWithOptions(image.size, false, 0.0)
-            img.draw(in: CGRect(origin: CGPoint.zero, size: image.size))
-            guard let resizedImage = UIGraphicsGetImageFromCurrentImageContext() else { fatalError() }
-            UIGraphicsEndImageContext()
-            return ImageContainer(image: resizedImage, type: .avif, data: data)
+            return ImageContainer(image: UIImage(), type: .avif, data: data, userInfo: ["width": image.size.width])
         }
     }
 
