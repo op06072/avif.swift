@@ -35,22 +35,33 @@ import avif
 
 public final class AVIFNukePlugin: Nuke.ImageDecoding {
     
+    private let isNukeViewerEnabled: Bool
     private lazy var decoder: AVIFDataDecoder = AVIFDataDecoder()
 
-    public init() {
+    public init(_ isNukeViewerEnabled: Bool = false) {
+        self.isNukeViewerEnabled = isNukeViewerEnabled
     }
     
     public func decode(_ data: Data) throws -> ImageContainer {
         guard data.isAVIFFormat else { throw ImageDecodingError.unknown }
         // guard let image = AVIFDecoder.decode(data) else { throw AVIFNukePluginDecodeError() }
         guard let image = try? decoder.decode(InputStream(data: data), sampleSize: .zero, maxContentSize: 0, scale: 1) else { throw AVIFNukePluginDecodeError() }
-        return ImageContainer(image: image, type: .avif, data: data)
+        if isNukeViewerEnabled {
+            guard let image = try? decoder.decode(InputStream(data: data), sampleSize: .zero, maxContentSize: 0, scale: 1) else { throw AVIFNukePluginDecodeError() }
+            return ImageContainer(image: image, type: .avif)
+        } else {
+            return ImageContainer(image: UIImage(), type: .avif, data: data)
+        }
     }
 
     public func decodePartiallyDownloadedData(_ data: Data) -> ImageContainer? {
         guard data.isAVIFFormat else { return nil }
         guard let image = decoder.incrementallyDecode(data) else { return nil }
-        return ImageContainer(image: image, type: .avif, data: data)
+        if isNukeViewerEnabled {
+            return ImageContainer(image: image, type: .avif)
+        } else {
+            return ImageContainer(image: UIImage(), type: .avif, data: data)
+        }
     }
 
     public struct AVIFNukePluginDecodeError: LocalizedError, CustomNSError {
