@@ -50,8 +50,11 @@ public final class AVIFNukePlugin: Nuke.ImageDecoding {
             return ImageContainer(image: image, type: .avif)
         } else {
             let img = UIImage()
-            img.setValue(image.size, forKey: "size")
-            return ImageContainer(image: img, type: .avif, data: data)
+            UIGraphicsBeginImageContextWithOptions(image.size, false, 0.0)
+            img.draw(in: CGRect(origin: CGPoint.zero, size: image.size))
+            guard let resizedImage = UIGraphicsGetImageFromCurrentImageContext() else { fatalError() }
+            UIGraphicsEndImageContext()
+            return ImageContainer(image: resizedImage, type: .avif, data: data)
         }
     }
 
