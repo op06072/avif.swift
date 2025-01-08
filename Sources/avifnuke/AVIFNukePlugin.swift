@@ -81,12 +81,12 @@ extension AVIFNukePlugin {
 
     public func enable() {
         Nuke.ImageDecoderRegistry.shared.register { (context) -> ImageDecoding? in
-            AVIFNukePlugin.enable(context: context)
+            self.enable(context: context)
         }
     }
 
-    public static func enable(context: Nuke.ImageDecodingContext) -> Nuke.ImageDecoding? {
-        return context.data.isAVIFFormat ? AVIFNukePlugin() : nil
+    public func enable(context: Nuke.ImageDecodingContext) -> Nuke.ImageDecoding? {
+        return context.data.isAVIFFormat ? self : nil
     }
 
 }
