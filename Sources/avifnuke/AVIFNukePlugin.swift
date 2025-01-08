@@ -79,7 +79,7 @@ public final class AVIFNukePlugin: Nuke.ImageDecoding {
 // MARK: - check avif format data.
 extension AVIFNukePlugin {
 
-    public static func enable() {
+    public func enable() {
         Nuke.ImageDecoderRegistry.shared.register { (context) -> ImageDecoding? in
             AVIFNukePlugin.enable(context: context)
         }
