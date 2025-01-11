@@ -347,7 +347,7 @@ void sharedDecoderDeallocator(avifDecoder* d) {
                 }
             }
             
-            avifDecoderDestroy(decoder.get());
+            // avifDecoderDestroy(decoder.get());
         
             UIImage *animatedImage = [SDImageCoderHelper animatedImageWithFrames:frames];
             animatedImage.sd_imageLoopCount = 0;
