@@ -345,12 +345,12 @@ void sharedDecoderDeallocator(avifDecoder* d) {
                     image = [[NSImage alloc] initWithCGImage:imageRef size:CGSizeZero];
         #else
                     image = [UIImage imageWithCGImage:imageRef scale:scale orientation:UIImageOrientationUp];
-        #endif
+        #endif*/
                     
                     if (!image) {
                         *error = [[NSError alloc] initWithDomain:@"AVIF" code:500 userInfo:@{ NSLocalizedDescriptionKey: @"Decoding AVIF has failed" }];
                         return nil;
-                    }*/
+                    }
                     
                     NSTimeInterval duration = decoder->imageTiming.duration; // Should use `decoder->imageTiming`, not the `decoder->duration`, see libavif source code
                     SDImageFrame *frame = [SDImageFrame frameWithImage:image duration:duration];
