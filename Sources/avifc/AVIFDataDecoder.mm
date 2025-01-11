@@ -356,6 +356,7 @@ void sharedDecoderDeallocator(avifDecoder* d) {
                     [frames addObject:frame];
                     // CGImageRelease(cgimage);
                     CGImageRelease(imageRef);
+                    frame = nil;
                 }
             }
             
