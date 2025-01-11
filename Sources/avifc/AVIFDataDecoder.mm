@@ -308,16 +308,16 @@ void sharedDecoderDeallocator(avifDecoder* d) {
                                                 userInfo:@{ NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Decoding AVIF failed with: %s", avifResultToString(nextImageResult)] }];
                 return nil;
             }
-            CGImageRef imageRef = SDCreateCGImageFromAVIF(decoder->image);
-            // auto image = [xForm form:decoder.get() scale:scale];
+            // CGImageRef imageRef = SDCreateCGImageFromAVIF(decoder->image);
+            auto image = [xForm form:decoder.get() scale:scale];
 
-            // if (!image) {
-            if (!imageRef) {
+            if (!image) {
+            // if (!imageRef) {
                 *error = [[NSError alloc] initWithDomain:@"AVIF" code:500 userInfo:@{ NSLocalizedDescriptionKey: @"Decoding AVIF has failed" }];
                 return nil;
             }
             
-            Image *image = nil;
+            /*Image *image = nil;
             
     #if AVIF_PLUGIN_MAC
             image = [[NSImage alloc] initWithCGImage:imageRef size:CGSizeZero];
@@ -325,7 +325,7 @@ void sharedDecoderDeallocator(avifDecoder* d) {
             image = [UIImage imageWithCGImage:imageRef scale:scale orientation:UIImageOrientationUp];
     #endif
             
-            CGImageRelease(imageRef);
+            CGImageRelease(imageRef);*/
             return image;
         } else if (decoder->imageCount < 1){
             NSLog(@"ImageCount < 1");
@@ -334,9 +334,9 @@ void sharedDecoderDeallocator(avifDecoder* d) {
             NSMutableArray<SDImageFrame *> *frames = [NSMutableArray array];
             while (avifDecoderNextImage(decoder.get()) == AVIF_RESULT_OK) {
                 @autoreleasepool {
-                    // auto image = [xForm form:decoder.get() scale:scale];
-                    // CGImageRef cgimage = SDCreateCGImageFromAVIF(decoder->image);
-                    CGImageRef imageRef = SDCreateCGImageFromAVIF(decoder->image);
+                    auto image = [xForm form:decoder.get() scale:scale];
+                    CGImageRef cgimage = SDCreateCGImageFromAVIF(decoder->image);
+                    /*CGImageRef imageRef = SDCreateCGImageFromAVIF(decoder->image);
                     if (!imageRef) {
                         continue;
                     }
@@ -350,13 +350,13 @@ void sharedDecoderDeallocator(avifDecoder* d) {
                     if (!image) {
                         *error = [[NSError alloc] initWithDomain:@"AVIF" code:500 userInfo:@{ NSLocalizedDescriptionKey: @"Decoding AVIF has failed" }];
                         return nil;
-                    }
+                    }*/
                     
                     NSTimeInterval duration = decoder->imageTiming.duration; // Should use `decoder->imageTiming`, not the `decoder->duration`, see libavif source code
                     SDImageFrame *frame = [SDImageFrame frameWithImage:image duration:duration];
                     [frames addObject:frame];
-                    // CGImageRelease(cgimage);
-                    CGImageRelease(imageRef);
+                    CGImageRelease(cgimage);
+                    // CGImageRelease(imageRef);
                     frame = nil;
                     image = nil;
                 }
