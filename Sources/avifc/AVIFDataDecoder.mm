@@ -252,6 +252,7 @@ void sharedDecoderDeallocator(avifDecoder* d) {
         }
         [inputStream close];
         std::shared_ptr<avifDecoder> decoder(avifDecoderCreate(), sharedDecoderDeallocator);
+        data = nil;
 
         avifResult decodeResult = avifDecoderSetIOMemory(decoder.get(), reinterpret_cast<const uint8_t *>(data.bytes), data.length);
         if (decodeResult != AVIF_RESULT_OK) {
@@ -357,6 +358,7 @@ void sharedDecoderDeallocator(avifDecoder* d) {
                     // CGImageRelease(cgimage);
                     CGImageRelease(imageRef);
                     frame = nil;
+                    image = nil;
                 }
             }
             
@@ -365,6 +367,8 @@ void sharedDecoderDeallocator(avifDecoder* d) {
             UIImage *animatedImage = [SDImageCoderHelper animatedImageWithFrames:frames];
             animatedImage.sd_imageLoopCount = 0;
             animatedImage.sd_imageFormat = SDImageFormatAVIF;
+            
+            frames = nil;
         
             return animatedImage;
         }
