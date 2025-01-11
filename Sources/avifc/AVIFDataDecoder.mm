@@ -343,8 +343,11 @@ void sharedDecoderDeallocator(avifDecoder* d) {
                     NSTimeInterval duration = decoder->imageTiming.duration; // Should use `decoder->imageTiming`, not the `decoder->duration`, see libavif source code
                     SDImageFrame *frame = [SDImageFrame frameWithImage:image duration:duration];
                     [frames addObject:frame];
+                    CGImageRelease(cgimage);
                 }
             }
+            
+            avifDecoderDestroy(decoder.get());
         
             UIImage *animatedImage = [SDImageCoderHelper animatedImageWithFrames:frames];
             animatedImage.sd_imageLoopCount = 0;
