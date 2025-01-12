@@ -383,7 +383,8 @@ static void XFormDataRelease(void * _Nullable info, const void * _Nullable data,
     CGImageRef imageRef = CGImageCreate(newWidth, newHeight, depth, bitsPerPixel,
                                         stride, colorSpace, flags, provider, NULL, false, kCGRenderingIntentDefault);
     
-    XFormDataRelease(provider, container, stride*newHeight);
+    // XFormDataRelease(provider, container, stride*newHeight);
+    CGDataProviderRelease(provider);
     return imageRef;
 }
 
