@@ -385,6 +385,7 @@ static void XFormDataRelease(void * _Nullable info, const void * _Nullable data,
     
     // XFormDataRelease(provider, container, stride*newHeight);
     CGDataProviderRelease(provider);
+    container->clear();
     return imageRef;
 }
 
