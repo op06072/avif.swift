@@ -334,6 +334,25 @@ void sharedDecoderDeallocator(avifDecoder* d) {
             NSMutableArray<SDImageFrame *> *frames = [NSMutableArray array];
             while (avifDecoderNextImage(decoder.get()) == AVIF_RESULT_OK) {
                 @autoreleasepool {
+                    if (!CGSizeEqualToSize(CGSizeZero, sampleSize)) {
+
+                        float imageAspectRatio = (float)decoder->image->width / (float)decoder->image->height;
+                        float canvasRatio = sampleSize.width / sampleSize.height;
+
+                        float resizeFactor = 1.0f;
+
+                        if (imageAspectRatio >= canvasRatio) {
+                            resizeFactor = sampleSize.width / (float)decoder->image->width;
+                        } else {
+                            resizeFactor = sampleSize.height / (float)decoder->image->width;
+                        }
+                        
+                        if (avifImageScale(decoder->image, (float)decoder->image->width*resizeFactor,
+                                           (float)decoder->image->height*resizeFactor, &decoder->diag)) {
+                            return nil;
+                        }
+                    }
+                    
                     auto image = [xForm form:decoder.get() scale:scale];
                     /*CGImageRef cgimage = SDCreateCGImageFromAVIF(decoder->image);
                     CGImageRef imageRef = SDCreateCGImageFromAVIF(decoder->image);
