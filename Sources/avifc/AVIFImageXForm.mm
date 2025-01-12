@@ -369,6 +369,7 @@ static void XFormDataRelease(void * _Nullable info, const void * _Nullable data,
         }
     }
     XFormDataContainer* container = new XFormDataContainer(mPixelsVector);
+    mPixelsVector.clear();
     CGDataProviderRef provider = CGDataProviderCreateWithData(container,
                                                               container->data(),
                                                               stride*newHeight,
