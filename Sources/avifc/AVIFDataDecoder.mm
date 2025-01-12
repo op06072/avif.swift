@@ -252,7 +252,6 @@ void sharedDecoderDeallocator(avifDecoder* d) {
         }
         [inputStream close];
         std::shared_ptr<avifDecoder> decoder(avifDecoderCreate(), sharedDecoderDeallocator);
-        data = nil;
 
         avifResult decodeResult = avifDecoderSetIOMemory(decoder.get(), reinterpret_cast<const uint8_t *>(data.bytes), data.length);
         if (decodeResult != AVIF_RESULT_OK) {
@@ -262,6 +261,7 @@ void sharedDecoderDeallocator(avifDecoder* d) {
                                             userInfo:@{ NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Decoding AVIF failed with: %s", avifResultToString(decodeResult)] }];
             return nil;
         }
+        data = nil;
         
         // Disable strict mode to keep some AVIF image compatible
         decoder->strictFlags = AVIF_STRICT_DISABLED;
@@ -335,8 +335,8 @@ void sharedDecoderDeallocator(avifDecoder* d) {
             while (avifDecoderNextImage(decoder.get()) == AVIF_RESULT_OK) {
                 @autoreleasepool {
                     auto image = [xForm form:decoder.get() scale:scale];
-                    CGImageRef cgimage = SDCreateCGImageFromAVIF(decoder->image);
-                    /*CGImageRef imageRef = SDCreateCGImageFromAVIF(decoder->image);
+                    /*CGImageRef cgimage = SDCreateCGImageFromAVIF(decoder->image);
+                    CGImageRef imageRef = SDCreateCGImageFromAVIF(decoder->image);
                     if (!imageRef) {
                         continue;
                     }
@@ -355,7 +355,7 @@ void sharedDecoderDeallocator(avifDecoder* d) {
                     NSTimeInterval duration = decoder->imageTiming.duration; // Should use `decoder->imageTiming`, not the `decoder->duration`, see libavif source code
                     SDImageFrame *frame = [SDImageFrame frameWithImage:image duration:duration];
                     [frames addObject:frame];
-                    CGImageRelease(cgimage);
+                    // CGImageRelease(cgimage);
                     // CGImageRelease(imageRef);
                     frame = nil;
                     image = nil;
