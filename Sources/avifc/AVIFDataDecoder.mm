@@ -285,7 +285,7 @@ void sharedDecoderDeallocator(avifDecoder* d) {
 
             float resizeFactor = 1.0f;
 
-            if (imageAspectRatio > canvasRatio) {
+            if (imageAspectRatio >= canvasRatio) {
                 resizeFactor = sampleSize.width / (float)decoder->image->width;
             } else {
                 resizeFactor = sampleSize.height / (float)decoder->image->width;
