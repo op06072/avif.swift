@@ -57,19 +57,19 @@ public final class AVIFNukePlugin: Nuke.ImageDecoding {
         if isNukeViewerEnabled {
             var size: CGSize = try! decoder.readSize(data) as! CGSize
             if self.width != 0 {
-                size.width = self.width
                 if self.height != 0 {
                     size.height = self.height
                 } else {
                     let height = self.width * size.height / size.width
                     size.height = height
                 }
+                size.width = self.width
             } else if self.height != 0 {
-                size.height = self.height
                 if self.width == 0 {
                     let width = self.height * size.width / size.height
                     size.width = width
                 }
+                size.height = self.height
             }
             guard let image = try? decoder.decode(InputStream(data: data), sampleSize: size, maxContentSize: 0, scale: 1) else { throw AVIFNukePluginDecodeError() }
             return ImageContainer(image: image, type: .avif)
