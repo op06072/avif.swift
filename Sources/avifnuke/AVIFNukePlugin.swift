@@ -40,6 +40,7 @@ public final class AVIFNukePlugin: Nuke.ImageDecoding {
     
     public lazy var width: CGFloat = 0
     public lazy var height: CGFloat = 0
+    public lazy var needData: Bool = false
 
     public init(isNuke isNukeViewerEnabled: Bool = false, width: CGFloat = 0, height: CGFloat = 0) {
         self.isNukeViewerEnabled = isNukeViewerEnabled
@@ -72,7 +73,11 @@ public final class AVIFNukePlugin: Nuke.ImageDecoding {
                 size.height = self.height
             }
             guard let image = try? decoder.decode(InputStream(data: data), sampleSize: size, maxContentSize: 0, scale: 1) else { throw AVIFNukePluginDecodeError() }
-            return ImageContainer(image: image, type: .avif)
+            if needData {
+                return ImageContainer(image: image, type: .avif, data: data)
+            } else {
+                return ImageContainer(image: image, type: .avif)
+            }
         } else {
             guard let size = try? decoder.readSize(data) else { throw AVIFNukePluginDecodeError() }
             return ImageContainer(image: UIImage(), type: .avif, data: data, userInfo: ["width": (size as! CGSize).width])
@@ -83,7 +88,11 @@ public final class AVIFNukePlugin: Nuke.ImageDecoding {
         guard data.isAVIFFormat else { return nil }
         guard let image = decoder.incrementallyDecode(data) else { return nil }
         if isNukeViewerEnabled {
-            return ImageContainer(image: image, type: .avif)
+            if needData {
+                return ImageContainer(image: image, type: .avif, data: data)
+            } else {
+                return ImageContainer(image: image, type: .avif)
+            }
         } else {
             return ImageContainer(image: UIImage(), type: .avif, data: data)
         }
