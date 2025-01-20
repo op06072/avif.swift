@@ -301,12 +301,33 @@ void sharedDecoderDeallocator(avifDecoder* d) {
         // Static image
         if (decoder->imageCount == 1) {
             avifResult nextImageResult = avifDecoderNextImage(decoder.get());
-            if (nextImageResult != AVIF_RESULT_OK) {
-                NSLog(@"Failed to decode image: %s", avifResultToString(nextImageResult));
-                *error = [[NSError alloc] initWithDomain:@"AVIF"
-                                                    code:500
-                                                userInfo:@{ NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Decoding AVIF failed with: %s", avifResultToString(nextImageResult)] }];
-                return nil;
+            @autoreleasepool {
+                if (!CGSizeEqualToSize(CGSizeZero, sampleSize)) {
+                    
+                    float imageAspectRatio = (float)decoder->image->width / (float)decoder->image->height;
+                    float canvasRatio = sampleSize.width / sampleSize.height;
+                    
+                    float resizeFactor = 1.0f;
+                    
+                    if (imageAspectRatio >= canvasRatio) {
+                        resizeFactor = sampleSize.width / (float)decoder->image->width;
+                    } else {
+                        resizeFactor = sampleSize.height / (float)decoder->image->width;
+                    }
+                    
+                    if (avifImageScale(decoder->image, (float)decoder->image->width*resizeFactor,
+                                       (float)decoder->image->height*resizeFactor, &decoder->diag)) {
+                        return nil;
+                    }
+                }
+                
+                if (nextImageResult != AVIF_RESULT_OK) {
+                    NSLog(@"Failed to decode image: %s", avifResultToString(nextImageResult));
+                    *error = [[NSError alloc] initWithDomain:@"AVIF"
+                                                        code:500
+                                                    userInfo:@{ NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Decoding AVIF failed with: %s", avifResultToString(nextImageResult)] }];
+                    return nil;
+                }
             }
             // CGImageRef imageRef = SDCreateCGImageFromAVIF(decoder->image);
             auto image = [xForm form:decoder.get() scale:scale];
