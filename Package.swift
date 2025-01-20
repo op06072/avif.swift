@@ -82,6 +82,7 @@ let package = Package(
                 dependencies: [
                     "SDWebImage",
                     "avifc",
+                    "avif"
                 ]),
     ],
     cxxLanguageStandard: .cxx20
