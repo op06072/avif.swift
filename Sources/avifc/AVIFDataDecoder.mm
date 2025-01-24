@@ -146,7 +146,6 @@ void sharedDecoderDeallocator(avifDecoder* d) {
         return animatedImage;
     } else {
         NSLog(@"AVIF Data decoder: image is not already allocated... continue decoding...");
-        avifDecoderDestroy(_idec);
         _idec = NULL;
         return nil;
     }
