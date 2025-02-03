@@ -14,20 +14,19 @@ let package = Package(
             name: "avifnuke",
             targets: ["avifnuke"]),
         .library(
-            name: "SDWebImageAVIF"
-            , targets: ["SDWebImageAVIF"]),
+            name: "SDWebImageAVIF",
+            targets: ["SDWebImageAVIF"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/kean/Nuke.git", "12.0.0"..<"13.0.0"),
+        .package(url: "https://github.com/kean/Nuke.git", "12.7.3"..<"13.0.0"),
         .package(url: "https://github.com/SDWebImage/SDWebImage.git", branch: "master"),
-        .package(url: "https://github.com/SDWebImage/libavif-Xcode.git", from: "0.11.1")
+        .package(url: "https://github.com/op06072/libavif-Xcode.git", branch: "warden"),
     ],
     targets: [
         .target(
             name: "avifnuke",
             dependencies: [
-                "avif", "avifc",
-                .product(name: "Nuke", package: "Nuke")
+                "avif", "avifc", "Nuke"
             ]),
         .target(
             name: "avif",
@@ -38,9 +37,12 @@ let package = Package(
                     .product(name: "SDWebImage", package: "SDWebImage"),
                 ],
                 publicHeadersPath: "include",
+                cSettings: [
+                    
+                ],
                 cxxSettings: [
                     .headerSearchPath("."),
-                    .define("DEBUG", to: "1"),
+                    // .define("DEBUG", to: "1"),
                     .unsafeFlags(["-lm"]),
                 ],
                 linkerSettings: [

@@ -1,39 +1,30 @@
 {
   "pins" : [
     {
-      "identity" : "libaom.swift",
+      "identity" : "libaom-xcode",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/awxkee/libaom.swift.git",
+      "location" : "https://github.com/op06072/libaom-Xcode.git",
       "state" : {
-        "revision" : "17ed302a68f6dc31e34ecf2a5b426ba8a667deac",
-        "version" : "1.1.0"
+        "branch" : "aomV3",
+        "revision" : "5425ccb384ccf1fb36f2975b39ea3229da36add9"
       }
     },
     {
-      "identity" : "libdav1d.swift",
+      "identity" : "libavif-xcode",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/awxkee/libdav1d.swift.git",
+      "location" : "https://github.com/op06072/libavif-Xcode.git",
       "state" : {
-        "revision" : "56f7037e7af7646f1d02bdcd16f5032e9d66e4d1",
-        "version" : "1.2.0"
+        "branch" : "warden",
+        "revision" : "e50b148420361c9e206645761a2b74d38c45346a"
       }
     },
     {
-      "identity" : "libsvtav1enc.swift",
+      "identity" : "libvmaf-xcode",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/awxkee/libsvtav1enc.swift",
+      "location" : "https://github.com/SDWebImage/libvmaf-Xcode.git",
       "state" : {
-        "revision" : "551a675778aa0dda6d23653ef3d0fc37a8d33c08",
-        "version" : "1.1.0"
-      }
-    },
-    {
-      "identity" : "libwebp-ios",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/op06072/libwebp-ios.git",
-      "state" : {
-        "revision" : "28b5ec0a2f8e1536cb097365c36912b858578cae",
-        "version" : "1.2.0"
+        "revision" : "9b116c9bd6e292a5564119915ba4a074085ea979",
+        "version" : "2.3.0"
       }
     },
     {
@@ -59,8 +50,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SDWebImage/SDWebImage.git",
       "state" : {
-        "revision" : "10d06f6a33bafae8c164fbfd1f03391f6d4692b3",
-        "version" : "5.20.0"
+        "branch" : "master",
+        "revision" : "15f6675966dafc3228e061b8e7e4f450286d274a"
       }
     }
   ],
