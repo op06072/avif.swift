@@ -154,10 +154,8 @@ static avifBool avifPrepareReformatState(const avifImage * image, const avifRGBI
     state->rgb.maxChannelF = (float)state->rgb.maxChannel;
     state->yuv.biasY = (state->yuv.range == AVIF_RANGE_LIMITED) ? (float)(16 << (state->yuv.depth - 8)) : 0.0f;
     state->yuv.biasUV = (float)(1 << (state->yuv.depth - 1));
-    state->yuv.biasA = (image->alphaRange == AVIF_RANGE_LIMITED) ? (float)(16 << (state->yuv.depth - 8)) : 0.0f;
     state->yuv.rangeY = (float)((state->yuv.range == AVIF_RANGE_LIMITED) ? (219 << (state->yuv.depth - 8)) : state->yuv.maxChannel);
     state->yuv.rangeUV = (float)((state->yuv.range == AVIF_RANGE_LIMITED) ? (224 << (state->yuv.depth - 8)) : state->yuv.maxChannel);
-    state->yuv.rangeA = (float)((image->alphaRange == AVIF_RANGE_LIMITED) ? (219 << (state->yuv.depth - 8)) : state->yuv.maxChannel);
 
     uint32_t cpCount = 1 << image->depth;
     if (state->yuv.mode == AVIF_REFORMAT_MODE_IDENTITY) {
@@ -566,51 +564,10 @@ static CGImageRef CreateCGImage8(avifImage * avif) {
 
     if(hasAlpha) { // alpha
         vImage_Buffer alphaBuffer = {0};
-        if(avif->alphaRange == AVIF_RANGE_LIMITED) {
-            float* floatAlphaBufferData = NULL;
-            floatAlphaBufferData = calloc(avif->width * avif->height, sizeof(float));
-            scaledAlphaBufferData = calloc(avif->width * avif->height, sizeof(uint8_t));
-            if(floatAlphaBufferData == NULL || scaledAlphaBufferData == NULL) {
-                err = kvImageMemoryAllocationError;
-                goto end_prepare_alpha;
-            }
-            vImage_Buffer origAlphaBuffer = {
-                .data = avif->alphaPlane,
-                .width = avif->width,
-                .height = avif->height,
-                .rowBytes = avif->alphaRowBytes,
-            };
-            vImage_Buffer floatAlphaBuffer = {
-                .data = floatAlphaBufferData,
-                .width = avif->width,
-                .height = avif->height,
-                .rowBytes = avif->width * sizeof(float),
-            };
-            alphaBuffer.width = avif->width;
-            alphaBuffer.height = avif->height;
-            alphaBuffer.data = scaledAlphaBufferData;
-            alphaBuffer.rowBytes = avif->width * sizeof(uint8_t);
-            err = vImageConvert_Planar8toPlanarF(&origAlphaBuffer, &floatAlphaBuffer, 255.0f, 0.0f, kvImageNoFlags);
-            if(err != kvImageNoError) {
-               NSLog(@"Failed to convert alpha planes from uint8 to float: %ld", err);
-                goto end_prepare_alpha;
-            }
-            err = vImageConvert_PlanarFtoPlanar8(&floatAlphaBuffer, &alphaBuffer, 235.0f, 16.0f, kvImageNoFlags);
-            if(err != kvImageNoError) {
-                NSLog(@"Failed to convert alpha planes from float to uint8: %ld", err);
-                goto end_prepare_alpha;
-            }
-        end_prepare_alpha:
-            free(floatAlphaBufferData);
-            if(err != kvImageNoError) {
-                goto end_alpha;
-            }
-        } else {
-            alphaBuffer.width = avif->width;
-            alphaBuffer.height = avif->height;
-            alphaBuffer.data = avif->alphaPlane;
-            alphaBuffer.rowBytes = avif->alphaRowBytes;
-        }
+        alphaBuffer.width = avif->width;
+        alphaBuffer.height = avif->height;
+        alphaBuffer.data = avif->alphaPlane;
+        alphaBuffer.rowBytes = avif->alphaRowBytes;
         if(monochrome) { // alpha_mono
             uint8_t* tmpBufferData = NULL;
             uint8_t* monoBufferData = NULL;
@@ -861,21 +818,11 @@ static CGImageRef CreateCGImage16U(avifImage * avif) {
         float offset = 0.0f;
         float rangeMax = 0.0f;
         if(avif->depth == 10) {
-            if(avif->alphaRange == AVIF_RANGE_LIMITED) {
-                offset = 64.0f;
-                rangeMax = 940.0f;
-            } else {
-                offset = 0.0f;
-                rangeMax = 1023.0f;
-            }
+            offset = 0.0f;
+            rangeMax = 1023.0f;
         } else if(avif->depth == 12) {
-            if(avif->alphaRange == AVIF_RANGE_LIMITED) {
-                offset = 256.0f;
-                rangeMax = 3760.0f;
-            } else {
-                offset = 0.0f;
-                rangeMax = 4095.0f;
-            }
+            offset = 0.0f;
+            rangeMax = 4095.0f;
         }
         float const scale = (float)(rangeMax - offset) / 65535.0f;
         err = vImageConvert_16UToF(&origAlpha, &floatAlphaBuffer, 0.0f, 1.0f, kvImageNoFlags);
