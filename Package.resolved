@@ -6,7 +6,7 @@
       "location" : "https://github.com/op06072/libaom-Xcode.git",
       "state" : {
         "branch" : "aomV3",
-        "revision" : "5425ccb384ccf1fb36f2975b39ea3229da36add9"
+        "revision" : "b28a55784d3eea0d8236f921494fe5e4dcfdaa35"
       }
     },
     {
@@ -15,7 +15,7 @@
       "location" : "https://github.com/op06072/libavif-Xcode.git",
       "state" : {
         "branch" : "warden",
-        "revision" : "7ff1612df11d838b8fd988f599a94c34b7970031"
+        "revision" : "5776890c5270efa5b18e34e37bc3d9c76c84efdc"
       }
     },
     {
