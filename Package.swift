@@ -19,7 +19,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/kean/Nuke.git", "12.7.3"..<"13.0.0"),
-        .package(url: "https://github.com/SDWebImage/SDWebImage.git", branch: "master"),
+        .package(url: "https://github.com/SDWebImage/SDWebImage.git", "5.0.0"..<"5.21.0"),
         .package(url: "https://github.com/op06072/libavif-Xcode.git", branch: "warden"),
     ],
     targets: [

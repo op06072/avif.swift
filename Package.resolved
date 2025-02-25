@@ -15,7 +15,7 @@
       "location" : "https://github.com/op06072/libavif-Xcode.git",
       "state" : {
         "branch" : "warden",
-        "revision" : "ec5b67e657a0941b3bb7f744ad709f24bed2c540"
+        "revision" : "61fa3fae69dd36b962883bae0adf78029b1e849f"
       }
     },
     {
@@ -50,8 +50,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SDWebImage/SDWebImage.git",
       "state" : {
-        "branch" : "master",
-        "revision" : "15f6675966dafc3228e061b8e7e4f450286d274a"
+        "revision" : "e7d3256c497af9330a0df866ee38f544ddd87c49",
+        "version" : "5.20.1"
       }
     }
   ],
